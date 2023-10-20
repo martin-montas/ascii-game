@@ -1,0 +1,11 @@
+# ignore object files
+*.o
+
+
+# ignore performace files
+gmon.out
+
+# other files for later use
+initScreen.txt  
+map00.txt  
+map01.txt
