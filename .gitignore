@@ -1,6 +1,8 @@
 # ignore object files
 *.o
 
+# ignore the binary file
+game
 
 # ignore performace files
 gmon.out
