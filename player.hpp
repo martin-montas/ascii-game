@@ -29,6 +29,10 @@
 #include <vector>
 #include "player.hpp"
 
+enum Player_status {
+    STATUS_DIED,   // the player was killed
+    STATUS_ALIVE,  // the player is still alive
+};
 
 class  Monster;
 
@@ -58,7 +62,7 @@ class  Player {
         void attach(Monster *mon);
         void detach(Monster *mon);
         void notify_monsters_moved();
-        bool notify_monsters_attack();
+        void notify_monsters_attack();
  private:
         std::vector<Monster *> monsters;
         int ypos, xpos;
@@ -67,6 +71,7 @@ class  Player {
         int player_strength;
         int player_life;
         bool is_alive;
+        Player_status pstatus;
 
 
 };

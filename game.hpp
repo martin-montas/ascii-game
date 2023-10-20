@@ -15,9 +15,10 @@
 #include "monster.hpp"
 
 enum quit_status {
- QUIT_NO = 0,  // Still playing
- QUIT_MENU,    // Quit at the menu
- QUIT_DIED     // Actual death
+ STATUS_PLAYING = 0, // Still playing
+ STATUS_PAUSED,     // pauses the game(no keystrokes)
+ STATUS_QUIT,      // Actual death
+ STATUS_MENU,      // menu was invoked
 };
 class Game {
  public:
@@ -39,7 +40,8 @@ class Game {
 
     bool    game_over; 
 
-    WINDOW *m_win; // main window
+    // the windows of the game
+    WINDOW *m_win; 
     WINDOW *ext_win;
 
     PANEL  *ext_panel;
@@ -50,7 +52,7 @@ class Game {
     // deallocate the monsters
     std::vector<Monster *> monsters;
 
-    quit_status uquit;
+    quit_status ustatus;
 };
 
 #endif  // GAME_HPP_

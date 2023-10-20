@@ -1,32 +1,11 @@
-/*                   GNU GENERAL PUBLIC LICENSE
- *                      Version 3, 29 June 2007
- *
- *   Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
- *   Everyone is permitted to copy and distribute verbatim copies
- *   of this license document, but changing it is not allowed.
- *   
- *   This file is part of ascii-game.
- * 
- *   ascii-game is free software: you can redistribute it and/or 
- *   modify it under the terms of the GNU General Public License 
- *   as published by the Free Software Foundation, either 
- *   version 3 of the License, or (at your option) any later version.
- *   
- *   ascii-game is distributed in the hope that it will be useful, 
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of 
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
- *   See the GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License 
- *   along with ascii-game. 
- *   If not, see <https://www.gnu.org/licenses/>. 
- *  
- */
+// Copyright 2022 Robot Locomotion Group @ CSAIL. All rights reserved.
+// All components of this software are licensed under the GNU License.
+// Programmer: Martin Montas, martinmontas1@gmail.com
+//
 #include <ncurses.h>
 #include <vector>
 
 #include "player.hpp"
-// #include "types.hpp"
 #include "ncurses.hpp"
 #include "monster.hpp"
 
@@ -38,7 +17,8 @@ Player::Player(WINDOW *win) {
     this->player_life = 10;
     this->win = win;
 
-    //Ncurses::update_life_point(win, player_life);
+    pstatus = STATUS_ALIVE;
+    // Ncurses::update_life_point(win, player_life);
 
 }
 bool Player::get_moved_state() {
@@ -64,7 +44,7 @@ void Player::notify_monsters_moved() {
     }
 }
 
-bool Player::notify_monsters_attack() {
+void Player::notify_monsters_attack() {
     for (Monster* mon : monsters) {
         if (PLayerWithinProximity(mon->monster_getter_pos())) {
             int damage  = mon->monster_attack();
@@ -72,13 +52,15 @@ bool Player::notify_monsters_attack() {
             Ncurses::update_life_point(this->win, player_life);
             Ncurses::update_window(this->win);
             if (player_life == 0) {
-                is_alive = false;
-                return true;
+                pstatus = STATUS_DIED;
+                // make bool maybe later
+                //return true;
             }
         }
     }
-    return false;
+    //return false;
 }
+
 /*
  * returns true if there is a proper way of moving
  */
@@ -157,7 +139,7 @@ int Player::PlayerAttack(WINDOW *win, Node
 */
 
 void Player::PlayerUpdate(WINDOW *win, int in) {
-    if (PlayerCanBeMove(win,in) && is_alive ) {
+    if (PlayerCanBeMove(win,in) && pstatus != STATUS_DIED) {
         mvwaddch(win, ypos, xpos, '.');
         PlayerMove(in);
     }

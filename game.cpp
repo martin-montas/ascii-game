@@ -28,6 +28,7 @@ Game::Game() {
     Ncurses::set_player_sees(m_win);
     Ncurses::set_window_command(m_win);
     wrefresh(m_win);
+    ustatus = STATUS_PLAYING;
 
 }
 
@@ -68,7 +69,8 @@ void Game::Run() {
 
                 player->PlayerUpdate(m_win,in);
                 player->notify_monsters_moved();
-                game_over = player->notify_monsters_attack();
+                player->notify_monsters_attack();
+
                 wrefresh(m_win);
                 break;
 
@@ -78,9 +80,9 @@ void Game::Run() {
                 ext_win    = Ncurses::exit_win(m_win);
                 ext_panel  = new_panel(ext_win);
                 w_in = wgetch(ext_win);
-                if (w_in == 'y')
-                    game_over = true;
-
+                if (w_in == 'y') {
+                    ustatus =  STATUS_QUIT;
+                }
                 if (w_in == 'n') {
                     top_panel(m_panel);
                     update_panels();
@@ -92,7 +94,7 @@ void Game::Run() {
             default:
                 continue;
             }
-    } while(!game_over);
+    } while(ustatus != STATUS_QUIT);
 }
 
 void Game::game_alert_resize() {
