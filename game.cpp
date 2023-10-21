@@ -33,7 +33,6 @@ Game::Game() {
 }
 
 Game::~Game() {
-
     wclear(ext_win);
     del_panel(ext_panel);
     delwin(ext_win);
