@@ -52,6 +52,7 @@ class Game {
     // deallocate the monsters
     std::vector<Monster *> monsters;
 
+    std::vector<unsigned int> monster_killed;
     quit_status ustatus;
 };
 

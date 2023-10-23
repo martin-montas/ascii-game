@@ -4,6 +4,8 @@
 //
 #include <ncurses.h>
 #include <vector>
+#include <cstdlib>
+
 
 #include "player.hpp"
 #include "ncurses.hpp"
@@ -38,13 +40,13 @@ void Player::detach(Monster *mon) {
         delete mon;
     }
 }
-void Player::notify_monsters_moved() {
+void Player::notify_monsters_move() {
     for (Monster* mon : monsters) {
         mon->monster_update(ypos, xpos);
     }
 }
 
-void Player::notify_monsters_attack() {
+void Player::notify_monster_hit() {
     for (Monster* mon : monsters) {
         if (PLayerWithinProximity(mon->monster_getter_pos())) {
             int damage  = mon->monster_attack();
@@ -119,24 +121,22 @@ bool Player::PLayerWithinProximity(Node enemy_pos) {
     }
 }
 
-/*
-int Player::PlayerAttack(WINDOW *win, Node
-        enemy_pos, int enemy_health, char monster_body) {
-    int enemy_setter = enemy_health;
-    int random_attack = rand() % Player::player_strength;
-    if (Player::PLayerWithinProximity(enemy_pos)) {
-        if (enemy_health == 1) {
-            enemy_setter = enemy_health- random_attack;
-            wattron(win, COLOR_PAIR(DEAD_COL));
-            mvwaddch(win, enemy_pos.first, enemy_pos.second, monster_body);
-            wattroff(win, COLOR_PAIR(DEAD_COL));
-            Ncurses::update_window(win);
-        } else {
-        }
+void Player::player_attack(WINDOW *win) {
+
+    //int enemy_setter = enemy_health;
+    int random_attack = rand() % player_strength;
+    for(Monster *mon: monsters) {
+    if (Player::PLayerWithinProximity(mon->monster_getter_pos())) {
+        int new_enemy_health = mon->monster_getter_life();
+        new_enemy_health -= random_attack;
+        mon->monster_dies();
+        mon->monster_setter_life(new_enemy_health);
+        Ncurses::update_window(win);
+
     }
-    return enemy_setter;
+
+    }
 }
-*/
 
 void Player::PlayerUpdate(WINDOW *win, int in) {
     if (PlayerCanBeMove(win,in) && pstatus != STATUS_DIED) {

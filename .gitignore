@@ -11,3 +11,7 @@ gmon.out
 initScreen.txt  
 map00.txt  
 map01.txt
+
+# ignore the gdb_history file
+.gdb_history
+

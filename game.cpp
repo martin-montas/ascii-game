@@ -13,6 +13,13 @@
 #include "ncurses.hpp"
 #include "types.hpp"
 
+
+std::vector<std::string> map_order = {
+    "./map/map02.txt"
+    "./map/map03.txt"
+
+};
+
 Game::Game() {
 
     Ncurses::init_colors();
@@ -66,14 +73,17 @@ void Game::Run() {
             case KEY_LEFT:
             case KEY_DOWN:
 
-                player->PlayerUpdate(m_win,in);
-                player->notify_monsters_moved();
-                player->notify_monsters_attack();
+                player->PlayerUpdate(m_win, in);
+                player->notify_monsters_move();
+                player->notify_monster_hit();
 
                 wrefresh(m_win);
                 break;
 
-            case ' ': // do nothing for now TODO
+            case ' ': 
+
+                player->player_attack(m_win);
+                break;
 
             case 'q':
                 ext_win    = Ncurses::exit_win(m_win);
