@@ -19,12 +19,14 @@
 namespace Ncurses {
     void init_colors();
     void exit();
+
+    //  these functions should be using the window class
     void draw_map(std::string path, WINDOW *win);
-    void update_life_point(WINDOW *win, int val);
     void update_strength_point(WINDOW *win, int val);
     void update_window(WINDOW *win);
     void update_Level(WINDOW *win, int val);
     void init_screen();
+    void update_life_point(WINDOW *win, int val);
     void del_win(WINDOW *win);
     void end_event();
     void set_alert_win(WINDOW *win);

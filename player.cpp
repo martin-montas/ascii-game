@@ -1,10 +1,11 @@
-// Copyright 2022 Robot Locomotion Group @ CSAIL. All rights reserved.
+/// Copyright 2022 Robot Locomotion Group @ CSAIL. All rights reserved.
 // All components of this software are licensed under the GNU License.
 // Programmer: Martin Montas, martinmontas1@gmail.com
 //
 #include <ncurses.h>
 #include <vector>
 #include <cstdlib>
+#include <time.h>
 
 
 #include "player.hpp"
@@ -12,15 +13,24 @@
 #include "monster.hpp"
 
 Player::Player(WINDOW *win) {
-    this->is_alive = true;
-    this->ypos = 10;
-    this->xpos = 2;
     this->player_strength = 3;
     this->player_life = 10;
     this->win = win;
 
     pstatus = STATUS_ALIVE;
-    // Ncurses::update_life_point(win, player_life);
+
+}
+void Player::generate_player_pos() {
+    int tmp_y, tmp_x;
+    do {
+        tmp_y = rand() % (LINES );
+        tmp_x = rand() % (COLS );
+    } while (mvwinch(win, tmp_y, tmp_x) != '.');
+    ypos = tmp_y;
+    xpos = tmp_x;
+    mvwaddch(win, tmp_y, tmp_x, '@');
+    Ncurses::update_window(win);
+
 
 }
 bool Player::get_moved_state() {
@@ -48,7 +58,7 @@ void Player::notify_monsters_move() {
 
 void Player::notify_monster_hit() {
     for (Monster* mon : monsters) {
-        if (PLayerWithinProximity(mon->monster_getter_pos())) {
+        if (player_proximity(mon->monster_getter_pos())) {
             int damage  = mon->monster_attack();
             player_life =  player_life - damage;
             Ncurses::update_life_point(this->win, player_life);
@@ -63,10 +73,7 @@ void Player::notify_monster_hit() {
     //return false;
 }
 
-/*
- * returns true if there is a proper way of moving
- */
-bool Player::PlayerCanBeMove(WINDOW *win,int in) {
+bool Player::player_can_move(int in) {
     if (in == KEY_RIGHT && mvwinch(win, ypos, xpos + 1) != '#') {
         return true;
     }
@@ -83,10 +90,7 @@ bool Player::PlayerCanBeMove(WINDOW *win,int in) {
     }
 }
 
-/*
- * updates the given player positions
- */
-void Player::PlayerMove(int in) {
+void Player::player_move(int in) {
     if (in == KEY_RIGHT) {
         xpos++;
     }
@@ -104,7 +108,7 @@ void Player::PlayerMove(int in) {
 /*
  * returns true if player within proximity
  */
-bool Player::PLayerWithinProximity(Node enemy_pos) {
+bool Player::player_proximity(Node enemy_pos) {
     if ((enemy_pos.second -1 == xpos) && (enemy_pos.first == ypos)) {
         return true;
     }
@@ -121,27 +125,36 @@ bool Player::PLayerWithinProximity(Node enemy_pos) {
     }
 }
 
-void Player::player_attack(WINDOW *win) {
+bool Player::notify_all_monster_life() {
+    for(Monster *mon : monsters) {
+        if(!mon->is_dead) 
+            return false;
+    }
+    return true;
+}
 
-    //int enemy_setter = enemy_health;
+
+
+void Player::player_attack() {
+
     int random_attack = rand() % player_strength;
     for(Monster *mon: monsters) {
-    if (Player::PLayerWithinProximity(mon->monster_getter_pos())) {
+    if (Player::player_proximity(mon->monster_getter_pos()) && (!mon->is_dead)) {
         int new_enemy_health = mon->monster_getter_life();
         new_enemy_health -= random_attack;
-        mon->monster_dies();
         mon->monster_setter_life(new_enemy_health);
+        if(new_enemy_health == 0)
+            mon->monster_dies();
+
         Ncurses::update_window(win);
-
-    }
-
+        }
     }
 }
 
-void Player::PlayerUpdate(WINDOW *win, int in) {
-    if (PlayerCanBeMove(win,in) && pstatus != STATUS_DIED) {
+void Player::player_update(int in) {
+    if (player_can_move(in) && pstatus != STATUS_DIED) {
         mvwaddch(win, ypos, xpos, '.');
-        PlayerMove(in);
+        player_move(in);
     }
     unsigned int current_char = mvwinch(win, ypos, xpos);
     if (current_char == '.') {

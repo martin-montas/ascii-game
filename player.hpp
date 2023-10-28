@@ -21,22 +21,24 @@ class  Monster;
 class  Player {
  public:
         Player(WINDOW* win);
-        void PlayerMove(int in);
-        void PlayerUpdate(WINDOW *win, int in);
-        void PlayerLifeUpdate(int amount);
-        bool PLayerWithinProximity(std::pair<int, int> enemy_pos);
-        bool PlayerCanBeMove(WINDOW *win,int in);
-        void player_attack (WINDOW *win);
-        void PlayerHealthSetter(int set_health) {
+        void player_move(int in);
+        void generate_player_pos();
+        void player_update( int in);
+        void player_life_update(int amount);
+        bool player_proximity(std::pair<int, int> enemy_pos);
+        bool player_can_move(int in);
+        void player_attack ();
+        bool notify_all_monster_life();
+        void setter_player_health(int set_health) {
             this->player_life = set_health;
-        }int PlayerHealthGetter() {
+        }int getter_player_health() {
             return player_life;
         }
-        void PlayerPosSetter(int y, int x) {
+        void setter_player_pos(int y, int x) {
             this->ypos = y;
             this->xpos = x;
         }
-        std::pair<int, int> PlayerPosGetter() {
+        std::pair<int, int> getter_player_pos() {
             return std::make_pair(ypos, xpos);
         }
         bool get_moved_state();       

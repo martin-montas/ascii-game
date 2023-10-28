@@ -42,18 +42,9 @@ void Ncurses::player_sees(WINDOW *win, char body, int color,std::string name) {
 
 }
 
-void Ncurses::set_player_sees(WINDOW *win) {
-    mvwprintw(win, 10, 80, "Player sees:");
-    Ncurses::update_window(win);
-}
-void Ncurses::update_life_point(WINDOW *win, int val) {
+void Ncurses::update_life_point(WINDOW *win,int val) {
     mvwprintw(win, 3, 80, "HP:%d", val);
-    Ncurses::update_window(win);
-}
-
-void Ncurses::update_strength_point(WINDOW *win, int val) {
-    mvwprintw(win, 4, 80, "ATK: %d", val);
-    Ncurses::update_window(win);
+    wrefresh(win);
 }
 
 void Ncurses::update_window(WINDOW *win) {
@@ -101,19 +92,6 @@ void Ncurses::init_screen() {
 /*
  *
  */
-void Ncurses::set_window_command(WINDOW *win) {
-
-    /* todo better logic for when there is resizing */
-    wattrset(win, A_NORMAL | COLOR_PAIR(RED_COL)); 
-    mvwaddch(win, LINES -30, 1, 'Q'); 
-    Ncurses::update_window(win);
-
-    wattrset(win, A_NORMAL); 
-    mvwprintw(win,LINES - 30, 2, "uit");
-    Ncurses::update_window(win);
-
-
-}
 
 
 

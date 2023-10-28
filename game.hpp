@@ -16,7 +16,7 @@
 
 enum quit_status {
  STATUS_PLAYING = 0, // Still playing
- STATUS_PAUSED,     // pauses the game(no keystrokes)
+ STATUS_PAUSED,     // pauses the game(no keystrokes on the current window)
  STATUS_QUIT,      // Actual death
  STATUS_MENU,      // menu was invoked
 };
@@ -30,30 +30,29 @@ class Game {
     void generate_monster(WINDOW *win, int amount,std::string name);
     void game_alert_resize();
     void handle_exit_win(int in);
-    void level00();
+    void generate_monster_group();
 
 
  private:
-
     Player *player;
-    Window  win;
+    Window  window;
 
     bool    game_over; 
 
-    // the windows of the game
+    std::unordered_map<int, Monster *> mon_group;
     WINDOW *m_win; 
     WINDOW *ext_win;
 
     PANEL  *ext_panel;
     PANEL  *alrt_panel;
     PANEL  *m_panel;
-
+    bool change_map;
     // the following vector is used to 
     // deallocate the monsters
     std::vector<Monster *> monsters;
-
     std::vector<unsigned int> monster_killed;
     quit_status ustatus;
-};
+    Monster *mon;
 
+};
 #endif  // GAME_HPP_

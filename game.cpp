@@ -7,34 +7,44 @@
 #include <panel.h>
 #include <vector>
 #include <utility>
+#include <cstdlib>
+#include <time.h>
+#include <unordered_map>
 
 #include "game.hpp"
+#include "monster.hpp"
 #include "window.hpp"
 #include "ncurses.hpp"
 #include "types.hpp"
 
+#define MAX_MONSTER  4
 
 std::vector<std::string> map_order = {
-    "./map/map02.txt"
+    "./map/map02.txt",
     "./map/map03.txt"
-
+    // TODO: more
 };
 
+int in;
+int w_in;
+int m_ind;
 Game::Game() {
 
+    game_over   = false;
     Ncurses::init_colors();
 
-    game_over   = false;
-    m_win       = win.Init(1, 1);
+    m_win       = window.Init(1, 1);
     m_panel     = new_panel(m_win);
-    player      = new Player(m_win);
+    window.set_player_sees();
+    window.set_window_command();
 
-    Ncurses::draw_map("./map/map02.txt", m_win);
+    player      = new Player(m_win);
+    m_ind       = 0;
+
+    Ncurses::draw_map(map_order.at(m_ind), m_win);
     Ncurses::update_Level(m_win, 1);
-    Ncurses::update_strength_point(m_win, 30);
-    Ncurses::set_player_sees(m_win);
-    Ncurses::set_window_command(m_win);
     wrefresh(m_win);
+
     ustatus = STATUS_PLAYING;
 
 }
@@ -43,20 +53,19 @@ Game::~Game() {
     wclear(ext_win);
     del_panel(ext_panel);
     delwin(ext_win);
+
     for(auto *m: monsters) {
         delete m;
-    }
 
+    }
     delete player;
     monsters.clear();
 }
 
-int in;
-int w_in;
 void Game::Run() {
 
-    level00();
-
+    player->generate_player_pos();
+    generate_monster_group();
     /* main loop */
     do  {
         switch((in = wgetch(m_win)))  {
@@ -73,19 +82,29 @@ void Game::Run() {
             case KEY_LEFT:
             case KEY_DOWN:
 
-                player->PlayerUpdate(m_win, in);
+                player->player_update(in);
                 player->notify_monsters_move();
                 player->notify_monster_hit();
 
                 wrefresh(m_win);
                 break;
 
-            case ' ': 
+            case ' ':  // this is the attack key
 
-                player->player_attack(m_win);
+                player->player_attack();
+                change_map = player->notify_all_monster_life();
+                if (change_map) {
+                    wclear(m_win);
+                    m_ind += 1;
+                    Ncurses::draw_map(map_order.at(m_ind), m_win);
+                    player->generate_player_pos();
+                    wrefresh(m_win);
+                }
                 break;
 
             case 'q':
+                ustatus = STATUS_PAUSED;
+                keypad(m_win, FALSE); 
                 ext_win    = Ncurses::exit_win(m_win);
                 ext_panel  = new_panel(ext_win);
                 w_in = wgetch(ext_win);
@@ -93,6 +112,8 @@ void Game::Run() {
                     ustatus =  STATUS_QUIT;
                 }
                 if (w_in == 'n') {
+                    ustatus = STATUS_PLAYING;
+                    keypad(m_win, TRUE); 
                     top_panel(m_panel);
                     update_panels();
                 } else {
@@ -118,18 +139,49 @@ void Game::game_alert_resize() {
     }
 }
 
-void Game::level00() {
-    Monster *mon    = new Monster(m_win, player, "orc", 2, 'o', GREEN_COL);
-    Monster *mon_2  = new Monster(m_win, player, "orc", 2, 'o', GREEN_COL);
+std::vector<char> monsters_name = {'o','s','m','z'};
 
-    // to keep track of the monsters 
-    player->attach(mon);
-    player->attach(mon_2);
+void Game::generate_monster_group() {
+    srand(time(NULL));
+    int m_amount =  rand() % MAX_MONSTER;
 
-    // for deletion on the destructor
-    monsters.push_back(mon);
-    monsters.push_back(mon_2);
+    if (m_amount == 0)
+        m_amount = 1;
 
+    while(m_amount--) {
+
+        char rand_mon = monsters_name.at(rand() % (monsters_name.size() -1));
+         switch (rand_mon) {
+             case 'o':
+                mon = new Monster(1, m_win, player, "orc", 2, 'o', GREEN_COL);
+                mon->monster_generate_pos();
+                player->attach(mon);
+                monsters.push_back(mon);
+                break;
+             case 'm':
+                mon = new Monster(1, m_win, player, "minotaur", 4, 'M', BLUE_COL);
+                mon->monster_generate_pos();
+                player->attach(mon);
+                monsters.push_back(mon);
+                break;
+             case 's':
+                mon     = new Monster(1, m_win, player, "sphinx", 3, 'S', YELLOW_COL);
+                mon->monster_generate_pos();
+                player->attach(mon);
+                monsters.push_back(mon);
+                break;
+             case 'z':
+                mon    = new Monster(1, m_win, player, "zombie", 3, 'Z', RED_COL);
+                mon->monster_generate_pos();
+                player->attach(mon);
+                monsters.push_back(mon);
+                break;
+           
+            default:
+                break;
+         }
+
+    }
 }
 
 void Game::handle_exit_win(int in) {

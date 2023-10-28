@@ -26,8 +26,9 @@ struct Monster_data {
 
 class Monster {
  protected:
-        WINDOW *monster_window;
+        WINDOW *win;
         int life;
+        int _id;
 
         int power;
         int m_y, m_x;
@@ -37,8 +38,9 @@ class Monster {
         std::string monster_name;
         std::unordered_map<std::string, Monster_data> data;
  public:
+        bool is_dead;
         // constructor here 
-        Monster(WINDOW *win,Player *pl, std::string name,int power, char body,int color);
+        Monster(int _id, WINDOW *win,Player *pl, std::string name,int power, char body,int color);
         void monster_generate_pos();
         void monster_update( int y, int x);
         int monster_attack();
