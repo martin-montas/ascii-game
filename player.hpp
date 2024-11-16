@@ -20,7 +20,7 @@ class  Monster;
 
 class  Player {
  public:
-        Player(WINDOW* win);
+        explicit Player(WINDOW* win);
         void player_move(int in);
         void generate_player_pos();
         void player_update(int in);

@@ -40,7 +40,7 @@ void Player::set_moved_state(bool new_state) {
 
 void Player::attach(Monster *mon) {
     monsters.push_back(mon);
-} 
+}
 
 void Player::detach(Monster *mon) {
     auto it = std::find(monsters.begin(), monsters.end(), mon);
@@ -128,7 +128,7 @@ bool Player::player_proximity(Node enemy_pos) {
 
 bool Player::notify_all_monster_life() {
     for (Monster *mon : monsters) {
-        if (!mon->is_dead) 
+        if (!mon->is_dead)
             return false;
     }
     return true;

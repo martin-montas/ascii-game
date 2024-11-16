@@ -8,7 +8,6 @@
 #include <ncurses.h>
 
 class Window{
-
  public:
         WINDOW * Init(int y, int x);
         void update_strength_point(int point);
