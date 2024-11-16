@@ -50,9 +50,6 @@ void Monster::monster_update(int p_y, int p_x) {
             wattroff(win, COLOR_PAIR(this->color));
             Ncurses::update_window(win);
         }
-        else {
-
-        }
     }
 }
 

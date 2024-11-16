@@ -43,7 +43,7 @@ void Ncurses::player_sees(WINDOW *win, char body, int color,std::string name) {
 }
 
 void Ncurses::update_life_point(WINDOW *win,int val) {
-    mvwprintw(win, 3, 80, "HP:%d", val);
+    mvwprintw(win, 3, 80, "HP: %d", val);
     wrefresh(win);
 }
 

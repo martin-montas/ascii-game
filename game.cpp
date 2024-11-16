@@ -176,7 +176,6 @@ void Game::generate_monster_group() {
                 player->attach(mon);
                 monsters.push_back(mon);
                 break;
-           
             default:
                 break;
          }

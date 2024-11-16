@@ -50,7 +50,7 @@ class Monster {
         bool monster_player_proximity();
         void monster_setter_pos(int y, int x) { m_y = y; m_x = x; }
         std::pair<int, int> monster_getter_pos() { return std::make_pair(m_y, m_x); }
-        void monster_setter_life(int setter_health) { life = setter_health; }
+        void monster_setter_life(int setter_health) { life = setter_health; if (life == 0) { monster_dies(); } }
         int monster_getter_life() { return life; }
 };
 
