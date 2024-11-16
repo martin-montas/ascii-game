@@ -8,7 +8,7 @@
 #include <ncurses.h>
 #include <vector>
 #include <utility>
-typedef std::pair<int,int> Node;
+typedef std::pair<int, int> Node;
 namespace BFirstSearch {
     std::vector<Node> Path(Node start, Node end, WINDOW *win);
     std::vector<Node> GetNeighbours(Node node, WINDOW *win);

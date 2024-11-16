@@ -7,12 +7,9 @@
 #include <ncurses.h>
 #include <utility>
 #include <vector>
-#include <stdlib.h>
-#include <unordered_map>
 
 #include "monster.hpp"
 #include "ncurses.hpp"
-#include "window.hpp"
 #include "breadthFirstSearch.hpp"
 
 std::vector<int> life_drop  = {10, 15, 30};
@@ -20,8 +17,7 @@ std::vector<int> armor_drop = {8, 10, 5};
 int random_loot, random_index, drop;
 
 
-Monster::Monster(int _id, WINDOW *win,Player *pl, std::string name,int power, char body,int color) {
-
+Monster::Monster(int _id, WINDOW *win, Player *pl, std::string name, int power, char body, int color) {
     this->is_dead = false;
     this->_id = _id;
     this->player = pl;
@@ -71,8 +67,8 @@ void Monster::monster_generate_pos() {
     srand(time(NULL));
     int tmp_y, tmp_x;
     do {
-        tmp_y = rand() % (LINES );
-        tmp_x = rand() % (COLS );
+        tmp_y = rand() % (LINES);
+        tmp_x = rand() % (COLS);
     } while (mvwinch(win, tmp_y, tmp_x) != '.');
     m_y = tmp_y;
     m_x = tmp_x;

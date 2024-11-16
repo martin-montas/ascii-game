@@ -6,7 +6,7 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <fstream>
-#include <vector>
+
 #include "ncurses.hpp"
 
 void Ncurses::init_colors() {
@@ -30,19 +30,18 @@ void Ncurses::update_Level(WINDOW *win, int val) {
     Ncurses::update_window(win);
 }
 
-void Ncurses::player_sees(WINDOW *win, char body, int color,std::string name) {
-    wattrset(win, A_NORMAL | COLOR_PAIR(color)); 
-    mvwaddch(win, 11, 80, body); 
+void Ncurses::player_sees(WINDOW *win, char body, int color, std::string name) {
+    wattrset(win, A_NORMAL | COLOR_PAIR(color));
+    mvwaddch(win, 11, 80, body);
     Ncurses::update_window(win);
 
     /* sets the new attribute */
-    wattrset(win, A_NORMAL); 
+    wattrset(win, A_NORMAL);
     mvwprintw(win, 11, 82, "%s", name.c_str());
     Ncurses::update_window(win);
-
 }
 
-void Ncurses::update_life_point(WINDOW *win,int val) {
+void Ncurses::update_life_point(WINDOW *win, int val) {
     mvwprintw(win, 3, 80, "HP: %d", val);
     wrefresh(win);
 }
@@ -74,10 +73,9 @@ void Ncurses::init_screen() {
     mvwprintw(menu_win, 3, 4, "PRESS Q TO QUIT");
     wattroff(menu_win, COLOR_PAIR(RED_COL));
     Ncurses::update_window(menu_win);
-
     /*
        int c;
-       switch((c = wgetch(stdscr))) {
+       switch ((c = wgetch(stdscr))) {
        case 'S':
        case 's':
        break;
@@ -89,20 +87,13 @@ void Ncurses::init_screen() {
        */
 }
 
-/*
- *
- */
-
-
-
 WINDOW *Ncurses::exit_win(WINDOW *win) {
-    int max_y, max_x,sub_max_y,sub_max_x, _y, _x;
-
+    int max_y, max_x, sub_max_y, sub_max_x, _y, _x;
     getmaxyx(stdscr, max_y, max_x);
     WINDOW *exit_win = newwin(LINES/4, COLS/4, LINES/4, COLS/4);
     refresh();
     box(exit_win, 0, 0);
-    getmaxyx(exit_win,sub_max_y,sub_max_x);
+    getmaxyx(exit_win, sub_max_y, sub_max_x);
     Ncurses::update_window(exit_win);
     std::string message = "Exit?";
     std::string cont = "(n)Continue";
@@ -136,7 +127,7 @@ void Ncurses::del_win(WINDOW *win) {
 }
 
 void Ncurses::set_alert_win(WINDOW *win) {
-    box(win,0,0);
+    box(win, 0, 0);
     mvwprintw(win, 0, 0, "this is a test for debug");
 }
 
@@ -156,5 +147,3 @@ void Ncurses::draw_map(std::string path, WINDOW *win) {
         }
     }
 }
-
-

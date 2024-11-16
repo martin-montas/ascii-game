@@ -6,10 +6,10 @@
 #define PLAYER_HPP_
 
 #include <ncurses.h>
-#include <algorithm>
 #include <utility>
 #include <vector>
-#include "player.hpp"
+
+// #include "player.hpp"
 
 enum Player_status {
     STATUS_DIED,   // the player was killed
@@ -23,11 +23,11 @@ class  Player {
         Player(WINDOW* win);
         void player_move(int in);
         void generate_player_pos();
-        void player_update( int in);
+        void player_update(int in);
         void player_life_update(int amount);
         bool player_proximity(std::pair<int, int> enemy_pos);
         bool player_can_move(int in);
-        void player_attack ();
+        void player_attack();
         bool notify_all_monster_life();
         void setter_player_health(int set_health) {
             this->player_life = set_health;
@@ -41,12 +41,13 @@ class  Player {
         std::pair<int, int> getter_player_pos() {
             return std::make_pair(ypos, xpos);
         }
-        bool get_moved_state();       
+        bool get_moved_state();
         void set_moved_state(bool new_state);
         void attach(Monster *mon);
         void detach(Monster *mon);
         void notify_monsters_move();
         void notify_monster_hit();
+
  private:
         std::vector<Monster *> monsters;
         int ypos, xpos;
@@ -56,7 +57,5 @@ class  Player {
         int player_life;
         bool is_alive;
         Player_status pstatus;
-
-
 };
 #endif  // PLAYER_HPP_

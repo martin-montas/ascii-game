@@ -7,7 +7,6 @@
 #include "window.hpp"
 #include "ncurses.hpp"
 
-
 WINDOW *Window::Init(int y, int x) {
     win = newwin(LINES,  COLS, y, x);
     keypad(win, true);
@@ -33,13 +32,10 @@ void Window::update_strength_point(int val) {
 void Window::set_window_command() {
     /* todo better logic for when there is resizing */
 
-    wattrset(win, A_NORMAL | COLOR_PAIR(RED_COL)); 
-    mvwaddch(win, LINES -30, 1, 'Q'); 
+    wattrset(win, A_NORMAL | COLOR_PAIR(RED_COL));
+    mvwaddch(win, LINES -30, 1, 'Q');
     wrefresh(win);
-
-    wattrset(win, A_NORMAL); 
-    mvwprintw(win,LINES - 30, 2, "uit");
+    wattrset(win, A_NORMAL);
+    mvwprintw(win, LINES - 30, 2, "uit");
     wrefresh(win);
-
-
 }

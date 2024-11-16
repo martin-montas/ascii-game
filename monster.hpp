@@ -10,11 +10,9 @@
 #include <utility>
 #include <string>
 
-#include "breadthFirstSearch.hpp"
 #include "player.hpp"
-#include "ncurses.hpp"
 
-//class Player;
+// class Player;
 
 
 struct Monster_data {
@@ -37,12 +35,13 @@ class Monster {
         int color;
         std::string monster_name;
         std::unordered_map<std::string, Monster_data> data;
+
  public:
         bool is_dead;
-        // constructor here 
-        Monster(int _id, WINDOW *win,Player *pl, std::string name,int power, char body,int color);
+        // constructor here
+        Monster(int _id, WINDOW *win, Player *pl, std::string name, int power, char body, int color);
         void monster_generate_pos();
-        void monster_update( int y, int x);
+        void monster_update(int y, int x);
         int monster_attack();
         void monster_generate_drop();
         void monster_dies();

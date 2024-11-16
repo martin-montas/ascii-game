@@ -15,3 +15,5 @@ map01.txt
 # ignore the gdb_history file
 .gdb_history
 
+# ingore the todo.md
+todo.md

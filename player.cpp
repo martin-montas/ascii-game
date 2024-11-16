@@ -1,11 +1,10 @@
-/// Copyright 2022 Robot Locomotion Group @ CSAIL. All rights reserved.
+// Copyright 2022 Robot Locomotion Group @ CSAIL. All rights reserved.
 // All components of this software are licensed under the GNU License.
 // Programmer: Martin Montas, martinmontas1@gmail.com
 //
 #include <ncurses.h>
 #include <vector>
 #include <cstdlib>
-#include <time.h>
 
 
 #include "player.hpp"
@@ -18,24 +17,23 @@ Player::Player(WINDOW *win) {
     this->win = win;
 
     pstatus = STATUS_ALIVE;
-
 }
 void Player::generate_player_pos() {
     int tmp_y, tmp_x;
     do {
-        tmp_y = rand() % (LINES );
-        tmp_x = rand() % (COLS );
+        tmp_y = rand() % (LINES);
+        tmp_x = rand() % (COLS);
     } while (mvwinch(win, tmp_y, tmp_x) != '.');
     ypos = tmp_y;
     xpos = tmp_x;
     mvwaddch(win, tmp_y, tmp_x, '@');
     Ncurses::update_window(win);
-
-
 }
+
 bool Player::get_moved_state() {
     return state;
 }
+
 void Player::set_moved_state(bool new_state) {
     state = new_state;
 }
@@ -43,6 +41,7 @@ void Player::set_moved_state(bool new_state) {
 void Player::attach(Monster *mon) {
     monsters.push_back(mon);
 } 
+
 void Player::detach(Monster *mon) {
     auto it = std::find(monsters.begin(), monsters.end(), mon);
     if (it != monsters.end()) {
@@ -50,11 +49,13 @@ void Player::detach(Monster *mon) {
         delete mon;
     }
 }
+
 void Player::notify_monsters_move() {
     for (Monster* mon : monsters) {
         mon->monster_update(ypos, xpos);
     }
 }
+
 
 void Player::notify_monster_hit() {
     for (Monster* mon : monsters) {
@@ -66,11 +67,11 @@ void Player::notify_monster_hit() {
             if (player_life == 0) {
                 pstatus = STATUS_DIED;
                 // make bool maybe later
-                //return true;
+                // return true;
             }
         }
     }
-    //return false;
+    // return false;
 }
 
 bool Player::player_can_move(int in) {
@@ -126,8 +127,8 @@ bool Player::player_proximity(Node enemy_pos) {
 }
 
 bool Player::notify_all_monster_life() {
-    for(Monster *mon : monsters) {
-        if(!mon->is_dead) 
+    for (Monster *mon : monsters) {
+        if (!mon->is_dead) 
             return false;
     }
     return true;
@@ -136,16 +137,15 @@ bool Player::notify_all_monster_life() {
 
 
 void Player::player_attack() {
-
     int random_attack = rand() % player_strength;
-    for(Monster *mon: monsters) {
+    for (Monster *mon : monsters) {
     if (Player::player_proximity(mon->monster_getter_pos()) && (!mon->is_dead)) {
         int new_enemy_health = mon->monster_getter_life();
         new_enemy_health -= random_attack;
         mon->monster_setter_life(new_enemy_health);
-        if(new_enemy_health == 0)
+        if (new_enemy_health == 0) {
             mon->monster_dies();
-
+        }
         Ncurses::update_window(win);
         }
     }

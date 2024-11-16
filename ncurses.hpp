@@ -7,7 +7,6 @@
 
 #include <ncurses.h>
 #include <string>
-#include <vector>
 
 #define GREEN_COL 1
 #define BLUE_COL 2
@@ -31,10 +30,9 @@ namespace Ncurses {
     void end_event();
     void set_alert_win(WINDOW *win);
     WINDOW *exit_win(WINDOW *win);
-    void player_sees(WINDOW *win, char body, int color,std::string name);
+    void player_sees(WINDOW *win, char body, int color, std::string name);
     void set_player_sees(WINDOW *win);
     void set_window_command(WINDOW *win);
     extern int pressed_key;
-
-}; // namespace Ncurses
+};
 #endif  // NCURSES_HPP_
